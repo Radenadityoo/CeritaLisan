@@ -8,8 +8,12 @@ import {
   StyleSheet,
 } from 'react-native';
 import StoryCard from '../components/StoryCard';
+import {useNavigation} from '@react-navigation/native';
+import { TouchableOpacity } from 'react-native';
+
 
 export default function HomeScreen() {
+  const navigation = useNavigation();
   const [ceritaList, setCeritaList] = useState([
     {
       id: 1,
@@ -58,11 +62,20 @@ export default function HomeScreen() {
         data={filteredData}
         keyExtractor={item => item.id.toString()}
         renderItem={({item}) => (
-          <StoryCard
-            judul={item.judul}
-            daerah={item.daerah}
-            deskripsi={item.deskripsi}
-          />
+          <TouchableOpacity
+            onPress={() =>
+              navigation.navigate('Detail Cerita', {
+                judul: item.judul,
+                daerah: item.daerah,
+                deskripsi: item.deskripsi,
+              })
+            }>
+            <StoryCard
+              judul={item.judul}
+              daerah={item.daerah}
+              deskripsi={item.deskripsi}
+            />
+          </TouchableOpacity>
         )}
       />
     </View>
