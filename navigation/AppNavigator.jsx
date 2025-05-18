@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unstable-nested-components */
 import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
@@ -6,6 +7,7 @@ import HomeScreen from '../screens/HomeScreen';
 import StoryDetailScreen from '../screens/StoryDetailScreen';
 import DiscoverScreen from '../screens/DiscoverScreen';
 import AboutScreen from '../screens/AboutScreen';
+import AddStoryScreen from '../screens/AddStoryScreen';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const Stack = createNativeStackNavigator();
@@ -16,6 +18,7 @@ function HomeStack() {
     <Stack.Navigator>
       <Stack.Screen name="Beranda" component={HomeScreen} />
       <Stack.Screen name="Detail Cerita" component={StoryDetailScreen} />
+      <Stack.Screen name="Tambah Cerita" component={AddStoryScreen} />
     </Stack.Navigator>
   );
 }

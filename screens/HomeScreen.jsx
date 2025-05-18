@@ -1,16 +1,14 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
   TextInput,
   FlatList,
-  Button,
   StyleSheet,
+  TouchableOpacity,
 } from 'react-native';
 import StoryCard from '../components/StoryCard';
-import {useNavigation} from '@react-navigation/native';
-import { TouchableOpacity } from 'react-native';
-
+import { useNavigation } from '@react-navigation/native';
 
 export default function HomeScreen() {
   const navigation = useNavigation();
@@ -31,37 +29,31 @@ export default function HomeScreen() {
 
   const [search, setSearch] = useState('');
 
-  const tambahCerita = () => {
-    const idBaru = ceritaList.length + 1;
-    setCeritaList(prev => [
-      ...prev,
-      {
-        id: idBaru,
-        judul: `Cerita Baru ${idBaru}`,
-        daerah: 'Daerah Baru',
-        deskripsi: 'Deskripsi cerita baru yang ditambahkan.',
-      },
-    ]);
-  };
-
   const filteredData = ceritaList.filter(item =>
-    item.judul.toLowerCase().includes(search.toLowerCase()),
+    item.judul.toLowerCase().includes(search.toLowerCase())
   );
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>CeritaLisan</Text>
+
       <TextInput
         style={styles.input}
         placeholder="Cari cerita rakyat..."
         value={search}
         onChangeText={setSearch}
       />
-      <Button title="Tambah Cerita Baru" onPress={tambahCerita} />
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => navigation.navigate('Tambah Cerita')}
+      >
+        <Text style={styles.buttonText}>Form Tambah Cerita</Text>
+      </TouchableOpacity>
+
       <FlatList
         data={filteredData}
         keyExtractor={item => item.id.toString()}
-        renderItem={({item}) => (
+        renderItem={({ item }) => (
           <TouchableOpacity
             onPress={() =>
               navigation.navigate('Detail Cerita', {
@@ -69,7 +61,8 @@ export default function HomeScreen() {
                 daerah: item.daerah,
                 deskripsi: item.deskripsi,
               })
-            }>
+            }
+          >
             <StoryCard
               judul={item.judul}
               daerah={item.daerah}
@@ -83,8 +76,8 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {flex: 1, padding: 16, backgroundColor: '#fff'},
-  title: {fontSize: 22, fontWeight: 'bold', marginBottom: 16},
+  container: { flex: 1, padding: 16, backgroundColor: '#fff' },
+  title: { fontSize: 22, fontWeight: 'bold', marginBottom: 16 },
   input: {
     borderWidth: 1,
     borderColor: '#ccc',
@@ -92,5 +85,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 8,
     marginBottom: 16,
+  },
+  button: {
+    backgroundColor: '#2196F3',
+    paddingVertical: 12,
+    borderRadius: 8,
+    marginBottom: 16,
+  },
+  buttonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
 });
