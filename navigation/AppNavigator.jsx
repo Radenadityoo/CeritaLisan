@@ -1,14 +1,15 @@
 /* eslint-disable react/no-unstable-nested-components */
 import React from 'react';
-import {NavigationContainer} from '@react-navigation/native';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+
 import HomeScreen from '../screens/HomeScreen';
 import StoryDetailScreen from '../screens/StoryDetailScreen';
+import AddStoryScreen from '../screens/AddStoryScreen';
 import DiscoverScreen from '../screens/DiscoverScreen';
 import AboutScreen from '../screens/AboutScreen';
-import AddStoryScreen from '../screens/AddStoryScreen';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -16,19 +17,23 @@ const Tab = createBottomTabNavigator();
 function HomeStack() {
   return (
     <Stack.Navigator>
-      <Stack.Screen name="Beranda" component={HomeScreen} />
+      <Stack.Screen
+        name="HomeScreen"
+        component={HomeScreen}
+        options={{ title: 'Beranda' }} // ✅ This fixes the duplicate screen name warning
+      />
       <Stack.Screen name="Detail Cerita" component={StoryDetailScreen} />
       <Stack.Screen name="Tambah Cerita" component={AddStoryScreen} />
     </Stack.Navigator>
   );
 }
 
-export default function App() {
+export default function AppNavigator() {
   return (
     <NavigationContainer>
       <Tab.Navigator
-        screenOptions={({route}) => ({
-          tabBarIcon: ({color, size}) => {
+        screenOptions={({ route }) => ({
+          tabBarIcon: ({ color, size }) => {
             let iconName;
             if (route.name === 'Beranda') {
               iconName = 'home-outline';
@@ -41,11 +46,12 @@ export default function App() {
           },
           tabBarActiveTintColor: '#FF5722',
           tabBarInactiveTintColor: 'gray',
-        })}>
+        })}
+      >
         <Tab.Screen
           name="Beranda"
           component={HomeStack}
-          options={{headerShown: false}}
+          options={{ headerShown: false }}
         />
         <Tab.Screen name="Jelajahi" component={DiscoverScreen} />
         <Tab.Screen name="Tentang" component={AboutScreen} />

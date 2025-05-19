@@ -1,33 +1,43 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import React, { useRef, useEffect } from 'react';
+import { Animated, Text, View, StyleSheet } from 'react-native';
 
-const StoryCard = ({ judul, daerah, deskripsi }) => {
+export default function StoryCard({ judul, daerah, deskripsi }) {
+  const fadeAnim = useRef(new Animated.Value(0)).current; // Start invisible
+  const slideAnim = useRef(new Animated.Value(20)).current; // Start slightly lower
+
+
+  useEffect(() => {
+    Animated.timing(fadeAnim, { toValue: 1, duration: 500, useNativeDriver: true }).start();
+Animated.timing(slideAnim, { toValue: 0, duration: 500, useNativeDriver: true }).start();
+}, [fadeAnim, slideAnim]);
+
   return (
-    <View style={styles.card}>
-      <Text style={styles.cardTitle}>{judul}</Text>
-      <Text style={styles.cardRegion}>{daerah}</Text>
-      <Text numberOfLines={2} style={styles.cardDesc}>{deskripsi}</Text>
-    </View>
+    <Animated.View style={[styles.card, { opacity: fadeAnim, transform: [{ translateY: slideAnim }] }]}>
+      <Text style={styles.title}>{judul}</Text>
+      <Text style={styles.region}>{daerah}</Text>
+      <Text style={styles.desc}>{deskripsi}</Text>
+    </Animated.View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   card: {
-    padding: 16,
-    marginBottom: 12,
     backgroundColor: '#f5f5f5',
-    borderRadius: 8,
+    padding: 16,
+    borderRadius: 12,
+    marginBottom: 12,
   },
-  cardTitle: {
+  title: {
     fontSize: 18,
     fontWeight: 'bold',
   },
-  cardRegion: {
-    color: 'gray',
+  region: {
+    fontSize: 14,
+    color: '#666',
   },
-  cardDesc: {
-    marginTop: 4,
+  desc: {
+    marginTop: 8,
+    fontSize: 14,
+    color: '#333',
   },
 });
-
-export default StoryCard;
