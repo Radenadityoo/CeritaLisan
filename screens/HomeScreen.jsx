@@ -1,83 +1,91 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
-  View,
-  Text,
-  TextInput,
   FlatList,
+  View,
+  TextInput,
+  Text,
   StyleSheet,
+  ActivityIndicator,
   TouchableOpacity,
 } from 'react-native';
 import StoryCard from '../components/StoryCard';
-import { useNavigation } from '@react-navigation/native';
+import {getCerita} from '../utils/api';
+import {useNavigation} from '@react-navigation/native';
 
 export default function HomeScreen() {
   const navigation = useNavigation();
-  const [ceritaList, setCeritaList] = useState([
-    {
-      id: 1,
-      judul: 'Malin Kundang',
-      daerah: 'Sumatera Barat',
-      deskripsi: 'Seorang anak durhaka dikutuk menjadi batu.',
-    },
-    {
-      id: 2,
-      judul: 'Timun Mas',
-      daerah: 'Jawa Tengah',
-      deskripsi: 'Cerita tentang gadis pemberani yang melawan raksasa.',
-    },
-  ]);
-
+  const [data, setData] = useState([]);
   const [search, setSearch] = useState('');
+  const [loading, setLoading] = useState(true);
 
-  const filteredData = ceritaList.filter(item =>
-    item.judul.toLowerCase().includes(search.toLowerCase())
+  const loadData = async () => {
+    try {
+      const stories = await getCerita();
+      setData(stories);
+    } catch (error) {
+      console.error('Failed to load:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', loadData);
+    return unsubscribe;
+  }, [navigation]);
+
+  const filtered = data.filter(item =>
+    item.judul.toLowerCase().includes(search.toLowerCase()),
   );
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>CeritaLisan</Text>
-
       <TextInput
         style={styles.input}
         placeholder="Cari cerita rakyat..."
         value={search}
         onChangeText={setSearch}
       />
+
       <TouchableOpacity
         style={styles.button}
-        onPress={() => navigation.navigate('Tambah Cerita')}
-      >
-        <Text style={styles.buttonText}>Form Tambah Cerita</Text>
+        onPress={() => navigation.navigate('Tambah Cerita')}>
+        <Text style={styles.buttonText}>Tambah Cerita</Text>
       </TouchableOpacity>
 
-      <FlatList
-        data={filteredData}
-        keyExtractor={item => item.id.toString()}
-        renderItem={({ item }) => (
-          <TouchableOpacity
-            onPress={() =>
-              navigation.navigate('Detail Cerita', {
-                judul: item.judul,
-                daerah: item.daerah,
-                deskripsi: item.deskripsi,
-              })
-            }
-          >
-            <StoryCard
-              judul={item.judul}
-              daerah={item.daerah}
-              deskripsi={item.deskripsi}
-            />
-          </TouchableOpacity>
-        )}
-      />
+      {loading ? (
+        <ActivityIndicator />
+      ) : (
+        <FlatList
+          data={filtered}
+          keyExtractor={item => item.id}
+          renderItem={({item}) => (
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate('Detail Cerita', {
+                  id: item.id,
+                  judul: item.judul,
+                  daerah: item.daerah,
+                  deskripsi: item.deskripsi,
+                })
+              }>
+              <StoryCard
+                judul={item.judul}
+                daerah={item.daerah}
+                deskripsi={item.deskripsi}
+              />
+            </TouchableOpacity>
+          )}
+        />
+      )}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 16, backgroundColor: '#fff' },
-  title: { fontSize: 22, fontWeight: 'bold', marginBottom: 16 },
+  container: {flex: 1, padding: 16},
+  title: {fontSize: 22, fontWeight: 'bold', marginBottom: 16},
   input: {
     borderWidth: 1,
     borderColor: '#ccc',
@@ -87,14 +95,14 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   button: {
-    backgroundColor: '#2196F3',
+    backgroundColor: '#FF5722',
     paddingVertical: 12,
     borderRadius: 8,
     marginBottom: 16,
   },
   buttonText: {
     color: '#fff',
-    fontWeight: 'bold',
     textAlign: 'center',
+    fontWeight: 'bold',
   },
 });

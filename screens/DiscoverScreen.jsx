@@ -1,34 +1,55 @@
-import React from 'react';
-import {Text, StyleSheet, ScrollView } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { Text, StyleSheet, ScrollView, ActivityIndicator, TouchableOpacity } from 'react-native';
 import StoryCard from '../components/StoryCard';
-
-const sampleStories = [
-  {
-    id: 1,
-    judul: 'Legenda Sangkuriang',
-    daerah: 'Jawa Barat',
-    deskripsi: 'Cerita rakyat tentang terbentuknya Gunung Tangkuban Perahu.',
-  },
-  {
-    id: 2,
-    judul: 'Asal Mula Danau Toba',
-    daerah: 'Sumatera Utara',
-    deskripsi: 'Kisah seorang anak setengah ikan dan danau besar yang menyimpan rahasia.',
-  },
-];
+import { getCerita } from '../utils/api';
+import { useNavigation } from '@react-navigation/native';
 
 export default function DiscoverScreen() {
+  const [stories, setStories] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const navigation = useNavigation();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await getCerita();
+        setStories(data);
+      } catch (err) {
+        console.error('Error fetching stories:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>Jelajahi Cerita Baru</Text>
-      {sampleStories.map(story => (
-        <StoryCard
-          key={story.id}
-          judul={story.judul}
-          daerah={story.daerah}
-          deskripsi={story.deskripsi}
-        />
-      ))}
+      {loading ? (
+        <ActivityIndicator />
+      ) : (
+        stories.map((story) => (
+          <TouchableOpacity
+            key={story.id}
+            onPress={() =>
+              navigation.navigate('Detail Cerita', {
+                id: story.id,
+                judul: story.judul,
+                daerah: story.daerah,
+                deskripsi: story.deskripsi,
+              })
+            }
+          >
+            <StoryCard
+              judul={story.judul}
+              daerah={story.daerah}
+              deskripsi={story.deskripsi}
+            />
+          </TouchableOpacity>
+        ))
+      )}
     </ScrollView>
   );
 }

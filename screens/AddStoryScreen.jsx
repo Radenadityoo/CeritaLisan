@@ -1,20 +1,32 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
+import React, {useState} from 'react';
+import {View, Text, TextInput, Button, StyleSheet, Alert} from 'react-native';
+import {postCerita} from '../utils/api';
 
-export default function AddStoryScreen({ navigation }) {
+export default function AddStoryScreen({navigation}) {
   const [judul, setJudul] = useState('');
   const [daerah, setDaerah] = useState('');
   const [deskripsi, setDeskripsi] = useState('');
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!judul || !daerah || !deskripsi) {
       Alert.alert('Semua field harus diisi!');
       return;
     }
 
-    Alert.alert('Cerita berhasil ditambahkan!');
-    navigation.goBack(); // balik ke layar sebelumnya
+    try {
+      await postCerita({
+        judul,
+        daerah,
+        deskripsi,
+        createdAt: new Date().toISOString(),
+      });
+      Alert.alert('Cerita berhasil ditambahkan!');
+      navigation.goBack();
+    } catch (error) {
+      Alert.alert('Gagal menambahkan cerita');
+      console.error('POST error:', error);
+    }
   };
 
   return (
@@ -27,7 +39,7 @@ export default function AddStoryScreen({ navigation }) {
 
       <Text style={styles.label}>Deskripsi Cerita</Text>
       <TextInput
-        style={[styles.input, { height: 100 }]}
+        style={[styles.input, {height: 100}]}
         multiline
         value={deskripsi}
         onChangeText={setDeskripsi}
@@ -39,8 +51,8 @@ export default function AddStoryScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  container: { padding: 16, backgroundColor: '#fff', flex: 1 },
-  label: { fontSize: 16, marginBottom: 6 },
+  container: {padding: 16, backgroundColor: '#fff', flex: 1},
+  label: {fontSize: 16, marginBottom: 6},
   input: {
     borderWidth: 1,
     borderColor: '#ccc',
