@@ -1,23 +1,22 @@
-import axios from 'axios';
-
-const API_URL = 'https://682b5617d29df7a95be30583.mockapi.io/api/cerita';
+import firestore from '@react-native-firebase/firestore';
 
 export const getCerita = async () => {
-  const res = await axios.get(API_URL);
-  return res.data;
+  const snapshot = await firestore().collection('cerita').get();
+  return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 };
 
-export const postCerita = async (newCerita) => {
-  const res = await axios.post(API_URL, newCerita);
-  return res.data;
-};
-
-export const putCerita = async (id, updatedCerita) => {
-  const res = await axios.put(`${API_URL}/${id}`, updatedCerita);
-  return res.data;
+export const postCerita = async (data) => {
+  const docRef = await firestore().collection('cerita').add({
+    ...data,
+    createdAt: firestore.FieldValue.serverTimestamp(),
+  });
+  return docRef.id;
 };
 
 export const deleteCerita = async (id) => {
-  const res = await axios.delete(`${API_URL}/${id}`);
-  return res.data;
+  await firestore().collection('cerita').doc(id).delete();
+};
+
+export const putCerita = async (id, data) => {
+  await firestore().collection('cerita').doc(id).update(data);
 };

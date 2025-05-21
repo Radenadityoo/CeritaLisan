@@ -9,7 +9,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import StoryCard from '../components/StoryCard';
-import {getCerita} from '../utils/api';
+import { getCerita } from '../utils/api';
 import {useNavigation} from '@react-navigation/native';
 
 export default function HomeScreen() {

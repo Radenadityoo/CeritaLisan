@@ -19,7 +19,6 @@ export default function AddStoryScreen({navigation}) {
         judul,
         daerah,
         deskripsi,
-        createdAt: new Date().toISOString(),
       });
       Alert.alert('Cerita berhasil ditambahkan!');
       navigation.goBack();

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "50608118254",
+    "project_id": "ceritalisan",
+    "storage_bucket": "ceritalisan.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:50608118254:android:bea466b78cfe34ca83d6ff",
+        "android_client_info": {
+          "package_name": "com.ceritalisan"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAhQ8KoOUAkrugGfQxs9qUaiPF50wWG8nc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
