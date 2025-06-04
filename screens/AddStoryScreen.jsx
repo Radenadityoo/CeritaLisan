@@ -2,6 +2,8 @@
 import React, {useState} from 'react';
 import {View, Text, TextInput, Button, StyleSheet, Alert} from 'react-native';
 import {postCerita} from '../utils/api';
+import { showStoryAddedNotification } from '../utils/notifications'; // adjust path if needed
+
 
 export default function AddStoryScreen({navigation}) {
   const [judul, setJudul] = useState('');
@@ -9,24 +11,29 @@ export default function AddStoryScreen({navigation}) {
   const [deskripsi, setDeskripsi] = useState('');
 
   const handleSubmit = async () => {
-    if (!judul || !daerah || !deskripsi) {
-      Alert.alert('Semua field harus diisi!');
-      return;
-    }
+  if (!judul || !daerah || !deskripsi) {
+    Alert.alert('Semua field harus diisi!');
+    return;
+  }
 
-    try {
-      await postCerita({
-        judul,
-        daerah,
-        deskripsi,
-      });
-      Alert.alert('Cerita berhasil ditambahkan!');
-      navigation.goBack();
-    } catch (error) {
-      Alert.alert('Gagal menambahkan cerita');
-      console.error('POST error:', error);
-    }
-  };
+  try {
+    await postCerita({
+      judul,
+      daerah,
+      deskripsi,
+    });
+
+    // ✅ Show local notification
+    await showStoryAddedNotification();
+
+    Alert.alert('Cerita berhasil ditambahkan!');
+    navigation.goBack();
+  } catch (error) {
+    Alert.alert('Gagal menambahkan cerita');
+    console.error('POST error:', error);
+  }
+};
+
 
   return (
     <View style={styles.container}>
